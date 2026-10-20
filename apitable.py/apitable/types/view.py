@@ -1,7 +1,7 @@
 from enum import Enum
-from typing import Optional
+from typing import Optional, Union
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class ViewTypeEnum(str, Enum):
@@ -16,4 +16,4 @@ class ViewTypeEnum(str, Enum):
 class MetaView(BaseModel):
     id: str
     name: str
-    type: Optional[ViewTypeEnum] = None
+    type: Optional[Union[ViewTypeEnum, str]] = Field(default=None, union_mode='left_to_right')

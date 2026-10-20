@@ -27,9 +27,9 @@ class RecordsData(BaseModel):
 
 
 class GETResponseBase(BaseModel):
-    total: int
-    pageNum: int
-    pageSize: int
+    total: Optional[int] = None
+    pageNum: Optional[int] = None
+    pageSize: Optional[int] = None
 
 
 class GETRecordResponseData(GETResponseBase, RecordsData):

@@ -14,11 +14,11 @@ class SpaceManager:
     def _api_endpoint(self):
         return urljoin(self.apitable.api_base, f"/fusion/v1/spaces")
 
-    def _get_spaces(self) -> GETSpaceListResponse:
+    def _get_spaces(self, **kwargs) -> GETSpaceListResponse:
         """
         Get field meta
         """
-        resp = self.apitable.request.get(self._api_endpoint)
+        resp = self.apitable.request.get(self._api_endpoint, params=kwargs)
         return handle_response(resp, GETSpaceListResponse)
 
     def all(self):

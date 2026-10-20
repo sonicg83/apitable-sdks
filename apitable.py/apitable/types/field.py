@@ -182,7 +182,7 @@ class MetaField(BaseModel):
 
     def __init__(self, property=None, **data) -> None:
         property_model = self.get_property_by_type(data['type'])
-        _property = property_model(**property) if property_model else property
+        _property = property_model(**property) if property_model and property is not None else property
         super().__init__(property=_property, **data)
 
     @staticmethod

@@ -1,7 +1,7 @@
 from enum import Enum
 
-from typing import List, Optional
-from pydantic import BaseModel
+from typing import List, Optional, Union
+from pydantic import BaseModel, Field
 
 
 class NodeTypeEnum(str, Enum):
@@ -17,13 +17,13 @@ class NodeTypeEnum(str, Enum):
 class NodeListItem(BaseModel):
     id: str
     name: str
-    type: NodeTypeEnum
-    icon: str
-    isFav: bool
+    type: Union[NodeTypeEnum, str] = Field(union_mode='left_to_right')
+    icon: Optional[str] = None
+    isFav: Optional[bool] = None
 
 
 class NodeDetail(NodeListItem):
-    type: NodeTypeEnum = NodeTypeEnum.Folder
+    type: Union[NodeTypeEnum, str] = Field(default=NodeTypeEnum.Folder, union_mode='left_to_right')
     children: Optional[List[NodeListItem]] = None
 
 class NodeSearchInfo(NodeListItem):

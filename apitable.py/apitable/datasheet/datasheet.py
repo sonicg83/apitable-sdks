@@ -125,13 +125,13 @@ class Datasheet:
         return r.success
 
     # View
-    def get_views(self):
+    def get_views(self, **kwargs):
         """
         Get view meta
         """
         api_endpoint = urljoin(self.apitable.api_base,
                                f"/fusion/v1/datasheets/{self.id}/views")
-        r = self.apitable.request.get(api_endpoint).json()
+        r = self.apitable.request.get(api_endpoint, params=kwargs).json()
         r = GETMetaViewResponse(**r)
         if r.success:
             return r.data.views

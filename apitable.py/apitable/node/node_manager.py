@@ -13,18 +13,19 @@ class NodeManager:
         self.apitable = apitable
         self.space_id = kwargs.get('space_id', None)
 
-    def _get_nodes(self, space_id: str) -> GETNodeListResponse:
+    def _get_nodes(self, space_id: str, **kwargs) -> GETNodeListResponse:
         """
         Get field meta
         """
         node_list_resp = self.apitable.request.get(
-            urljoin(self.apitable.api_base, f"/fusion/v1/spaces/{space_id}/nodes")
+            urljoin(self.apitable.api_base, f"/fusion/v1/spaces/{space_id}/nodes"), params=kwargs
         )
         return handle_response(node_list_resp, GETNodeListResponse)
 
     def _get_node_detail(self, node_id: str) -> GETNodeDetailResponse:
+        path = f"/fusion/v1/spaces/{self.space_id}/nodes/{node_id}" if self.space_id else f"/fusion/v1/nodes/{node_id}"
         node_detail_resp = self.apitable.request.get(
-            urljoin(self.apitable.api_base, f"/fusion/v1/nodes/{node_id}")
+            urljoin(self.apitable.api_base, path)
         )
         return handle_response(node_detail_resp, GETNodeDetailResponse)
 
