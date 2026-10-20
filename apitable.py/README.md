@@ -1,5 +1,21 @@
 # APITable.py
 
+> Compatibility branch for [APITable CLI](https://github.com/sonicg83/apitable-cli).
+> Prepared from upstream commit `baadd9000c9695b5d398185d88b4488145573700`.
+> This branch uses setuptools, Python 3.13, Requests 2 and Pydantic 2; tested on
+> Windows CPython 3.13.5. It preserves the existing CLI-validated SDK behavior.
+> Follow the CLI installation guide and its `uv.lock` for the tested dependency set.
+> Build this SDK from the repository root with `uv build --wheel apitable.py`.
+> The older instructions below and `poetry.lock` are historical upstream material.
+> Compatibility CI builds a wheel on Windows/Python 3.13 and runs only
+> `tests_cli_compat` against that installed wheel with HTTP blocked. It uses no
+> service credentials; the inherited upstream publishing job is disabled in forks.
+> Do not run the inherited integration suite: it uses fixed remote resources and
+> includes writes/deletes. Run the CLI offline suite against the installed SDK wheel.
+> Package identity remains `apitable==2.0.0b4` for migration comparison only; no new
+> public release is implied. Choose a distinct distribution identity/revision before
+> publishing a modified SDK. Retain the original MIT copyright and license.
+
 [![Latest Version](https://shields.mitmproxy.org/pypi/v/apitable.svg)](https://pypi.python.org/pypi/apitable)
 
 It is the official package for the Fusion API of APITable, and provides an API similar to the Django ORM style.

@@ -8,6 +8,8 @@ on:
 
 jobs:
   publish:
+    # The compatibility fork does not own the upstream PyPI package identity.
+    if: github.repository == 'apitable/apitable-sdks'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

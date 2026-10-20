@@ -1,38 +1,43 @@
-name: Python Auto Test
+name: Python Compatibility Offline Tests
 
 on:
   push:
+    branches: ["compat/apitable-cli-v0.1"]
     paths:
       - "apitable.py/**"
       - ".github/workflows/py-test.yml"
+  pull_request:
+    paths:
+      - "apitable.py/**"
+      - ".github/workflows/py-test.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   unit_test:
-    runs-on: ubuntu-latest
-    environment: api
+    runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          python-version: 3.10.12
-      - name: Python Poetry
-        uses: abatilo/actions-poetry@v2
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
-          poetry-version: 1.5.1
-      - name: just build
+          python-version: "3.13"
+      - name: Build and install wheel
+        shell: pwsh
         run: |
-          cd apitable.py
-          make install
-          make setup
-      - name: test
-        env:
-          DOMAIN: ${{secrets.DOMAIN}}
-          TOKEN: ${{secrets.TOKEN}}
-          DATASHEET_ID: ${{secrets.PYTHON_DATASHEET_ID}}
-          DATASHEET_ID_FOR_GET: ${{secrets.PYTHON_DATASHEET_ID_FOR_GET}}
-          VIEW_ID: ${{secrets.PYTHON_VIEW_ID}}
-          SPACE_ID: ${{secrets.SPACE_ID}}
-          FOLDER_ID: ${{secrets.FOLDER_ID}}
+          python -m pip wheel --no-deps ./apitable.py --wheel-dir ./dist
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $sdkWheel = (Get-ChildItem ./dist/apitable-*.whl).FullName
+          python -m pip install $sdkWheel
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test installed SDK outside checkout
+        shell: pwsh
         run: |
-          cd apitable.py
-          make test
+          $sdkTests = Join-Path $env:GITHUB_WORKSPACE 'apitable.py/tests_cli_compat'
+          Set-Location $env:RUNNER_TEMP
+          python -c "import apitable,pathlib,sys; assert pathlib.Path(apitable.__file__).is_relative_to(pathlib.Path(sys.prefix)/'Lib/site-packages')"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m unittest discover -s $sdkTests -v
