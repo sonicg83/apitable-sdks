@@ -21,6 +21,8 @@ from apitable.types.response import (
     UploadFileResponse,
     RawRecord,
     GETMetaViewResponse,
+    PostViewResponse,
+    DeleteViewResponse,
     GETRecordResponse,
     DeleteFieldResponse,
     PostEmbedLinkResponse,
@@ -136,6 +138,33 @@ class Datasheet:
         if r.success:
             return r.data.views
         raise Exception(r.message)
+
+    def create_view(self, data) -> List["MetaView"]:
+        """
+        Create a view from a request body.
+        """
+        api_endpoint = urljoin(self.apitable.api_base,
+                               f"/fusion/v1/datasheets/{self.id}/views")
+        resp = self.apitable.request.post(api_endpoint, json=data)
+        return handle_response(resp, PostViewResponse).data.views
+
+    def duplicate_view(self, view_id: str) -> List["MetaView"]:
+        """
+        Duplicate an existing view in this datasheet.
+        """
+        api_endpoint = urljoin(self.apitable.api_base,
+                               f"/fusion/v1/datasheets/{self.id}/views/{view_id}/duplicate")
+        resp = self.apitable.request.post(api_endpoint)
+        return handle_response(resp, PostViewResponse).data.views
+
+    def delete_view(self, view_id: str) -> bool:
+        """
+        Delete an existing view in this datasheet.
+        """
+        api_endpoint = urljoin(self.apitable.api_base,
+                               f"/fusion/v1/datasheets/{self.id}/views/{view_id}")
+        resp = self.apitable.request.delete(api_endpoint)
+        return handle_response(resp, DeleteViewResponse).success
 
     # Record
     def get_records(self, **kwargs):

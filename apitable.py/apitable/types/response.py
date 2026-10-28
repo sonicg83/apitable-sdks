@@ -87,6 +87,18 @@ class GETMetaViewResponse(ResponseBase):
     data: GETMetaViewResponseData
 
 
+class PostViewResponseData(BaseModel):
+    views: List[MetaView]
+
+
+class PostViewResponse(ResponseBase):
+    data: PostViewResponseData
+
+
+class DeleteViewResponse(ResponseBase):
+    pass
+
+
 # space
 class GETSpaceListResponseData(BaseModel):
     spaces: List[SpaceListItem]
